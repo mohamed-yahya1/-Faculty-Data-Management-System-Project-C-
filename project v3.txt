@@ -1,0 +1,431 @@
+#include <iostream>
+using namespace std;
+
+struct course {
+    string co_name;
+    string co_code;
+    int credit_hours;
+};
+
+struct student {
+    string name;
+    string id;
+    int level;
+    string group;
+    float gpa;
+    float degree[5];
+    string course[5];
+
+};
+
+student students[120];
+course courses[12];
+int count_std = 0;
+int count_course = 0;
+
+void main_menu() {
+    cout << "    faculity manegment system    " << endl;
+    cout << " 1-Add Student" << endl;
+    cout << " 2-update Student" << endl;
+    cout << " 3-Delete Student" << endl;
+    cout << " 4-Add course" << endl;
+    cout << " 5-Update course" << endl;
+    cout << " 6-Delete course" << endl;
+    cout << " 7-Assign Course and Degree to Student" << endl;
+    cout << " 8-Display All Students" << endl;
+    cout << " 9-Display Student with Max Degree in Each Course" << endl;
+    cout << " 10-Display Students by Level" << endl;
+    cout << " 11-Search Student by ID or Name" << endl;
+    cout << " 12-Search Course by Name or Code" << endl;
+    cout << " 13-Exit" << endl;
+    cout << " Enter your choice: ";
+}
+
+void add_course(course courses[]) {
+    string choice;
+    while (count_course < 12) {
+        cout << " Enter course " << count_course + 1 << endl;
+        cout << " Course name: ";
+        cin >> courses[count_course].co_name;
+        cout << " Course code: ";
+        cin >> courses[count_course].co_code;
+        cout << " Credit hours: ";
+        cin >> courses[count_course].credit_hours;
+        count_course++;
+
+        if (count_course < 12) {
+            cout << " Do you want to add another course? (yes/no): ";
+            cin >> choice;
+            if (choice != "yes")
+                break;
+        }
+        else {
+            cout << " You have reached the max number of courses (12)" << endl;
+        }
+    }
+}
+
+void update_course(course courses[]) {
+    string search_code;
+    cout << " Enter course code to update: ";
+    cin >> search_code;
+    for (int i = 0; i < count_course; i++) {
+        if (courses[i].co_code == search_code) {
+            cout << " Current name: " << courses[i].co_name << ", hours: " << courses[i].credit_hours << endl;
+            cout << " New name: ";
+            cin >> courses[i].co_name;
+            cout << " New code: ";
+            cin >> courses[i].co_code;
+            cout << " New credit hours: ";
+            cin >> courses[i].credit_hours;
+            cout << " Course updated." << endl;
+            return;
+        }
+    }
+    cout << " Course not found." << endl;
+}
+
+void delete_course(course courses[]) {
+    string coursecode;
+    cout << " Enter course code to delete: ";
+    cin >> coursecode;
+    for (int i = 0; i < count_course; i++) {
+        if (courses[i].co_code == coursecode) {
+            for (int j = i; j < count_course - 1; j++)
+                courses[j] = courses[j + 1];
+            count_course--; 
+            cout << " Course deleted successfully." << endl;
+            return;
+        }
+    }
+    cout << " Course not found." << endl;
+}
+void add_std(int y) {
+    for (int i = 0; i < y; i++) {
+        cout << " Enter name for student " << i + 1 << ": ";
+        cin >> students[i].name;
+
+        cout << "=================" << endl;
+        cout << " Enter ID: ";
+        cin >> students[i].id;
+
+        cout << "=================" << endl;
+        cout << " Enter level (1 to 4): ";
+        cin >> students[i].level;
+        if (students[i].level < 1 || students[i].level > 4) {
+            cout << " Invalid level. Must be between 1 and 4. Level not saved." << endl;
+            return;
+        }
+
+        cout << "=================" << endl;
+        cout << " Enter group: ";
+        cin >> students[i].group;
+
+        cout << " =================" << endl;
+        cout << " Enter GPA (0.0 to 4.0): ";
+        cin >> students[i].gpa;
+        if (students[i].gpa < 0.0 || students[i].gpa > 4.0) {
+            cout << " Invalid GPA. Must be between 0.0 and 4.0. GPA not saved." << endl;
+            return;
+        }
+
+        cout << "=================" << endl;
+    }
+    count_std = y;
+}
+
+void updat_std(string data_input) {
+    for (int i = 0; i < count_std; i++) {
+        if (students[i].id == data_input || students[i].name == data_input) {
+            cout << " What do you want to update?" << endl;
+            cout << " choose the number" << endl;
+            cout << " 1.Level" << endl;
+            cout << " 2.Group" << endl;
+            cout << " 3.GPA" << endl;
+
+            int c;
+            cin >> c;
+
+            switch (c) {
+            case 1:
+                cout << " New Level (1 to 4): ";
+                cin >> students[i].level;
+                if (students[i].level < 1 || students[i].level > 4) {
+                    cout << " Invalid level. Value not saved." << endl;
+                    return;
+                }
+                break;
+            case 2:
+                cout << " New Group: ";
+                cin >> students[i].group;
+                break;
+            case 3:
+                cout << " New GPA (0.0 to 4.0): ";
+                cin >> students[i].gpa;
+                if (students[i].gpa < 0.0 || students[i].gpa > 4.0) {
+                    cout << " Invalid GPA. Value not saved." << endl;
+                    return;
+                }
+                break;
+
+            default:
+                cout << " Invalid option" << endl;
+            }
+            cout << " Student updated successfully " << endl;
+            return;
+        }
+    }
+    cout << " Student not found " << endl;
+}
+
+void delete_student(string dele_id) {
+    if (count_std == 0) {
+        cout << " There aren't any students" << endl;
+        return;
+    }
+
+    for (int i = 0; i < count_std; ++i) {
+        if (dele_id == students[i].id) {
+            for (int a = i; a < count_std - 1; ++a) {
+                students[a] = students[a + 1];
+            }
+            count_std--;
+            cout << " Student by id: " << dele_id << " deleted successfully." << endl;
+            return;
+        }
+    }
+    cout << " There isn't a student with this id: " << dele_id << endl;
+}
+
+void assign_course_to_student(string input_st_id, string input_cou_code, float degree) {
+    if (count_std == 0) {
+        cout << " There aren't any students or courses exist" << endl;
+        return;
+    }
+
+    for (int i = 0; i < count_std; ++i) {
+        if (students[i].id == input_st_id) {
+            cout << " Student exists" << endl;
+            for (int j = 0; j < 5; j++) {
+                if (students[i].course[j] == input_cou_code) {
+                    cout << " Course already assigned" << endl;
+                    return;
+                }
+            }
+            for (int j = 0; j < 5; j++) {
+                if (students[i].course[j] == "") {
+                    students[i].course[j] = input_cou_code;
+                    students[i].degree[j] = degree;
+                    cout << " Course with degree added to student successfully" << endl;
+                    return;
+                }
+            }
+            cout << " This student has reached the maximum number of courses" << endl;
+            return;
+        }
+    }
+    cout << "Student not found" << endl;
+}
+
+void display_all_students(student students[], int count) {
+    if (count_std == 0) {
+        cout << " there isn't students or courses " << endl;
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        cout<<" Name: " << students[i].name << endl;
+        cout << " Id : " << students[i].id << endl;
+        cout << " GPA : " << students[i].gpa << endl;
+        cout << " Level : " << students[i].level << endl;
+        cout << " Group : " << students[i].group << endl;
+        cout << (students[i].gpa >= 2 ? "student is pass" : "student is fail") << endl;
+
+        cout << "  Courses and Degrees: " << endl;
+        for (int j = 0; j < 5; j++) {
+            if (students[i].course[j] != "") {
+                cout << "    Course Code: " << students[i].course[j]
+                    << " - Degree: " << students[i].degree[j] << endl;
+            }
+        }
+
+
+    }
+}
+
+void displayStudentsByLevel(student students[], int level, int student_count) {
+    bool found = false;
+    for (int i = 0; i < student_count; i++) {
+        if (students[i].level == level) {
+            found = true;
+            cout << " Name: " << students[i].name << endl;
+            cout << " ID: " << students[i].id << endl;
+            cout << " Group: " << students[i].group << endl;
+            cout << " GPA: " << students[i].gpa << endl;
+        }
+    }
+    if (!found) {
+        cout << " No students found in this level" << endl;
+    }
+}
+
+void display_high_degree_in_course(student students[], int count) {
+    string course_name;
+    cout << "Enter course code to find high degree: ";
+    cin >> course_name;
+
+    float max_degree = -1;
+    string top_student;
+    bool found = false;
+
+    for (int i = 0; i < count; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (students[i].course[j] == course_name) {
+                if (students[i].degree[j] > max_degree) {
+                    max_degree = students[i].degree[j];
+                    top_student = students[i].name;
+                    found = true;
+                }
+            }
+        }
+    }
+
+    if (found) {
+        cout << " Student with the highest degree in course:\n";
+        cout << " Name: " << top_student << endl;
+        cout << " Degree: " << max_degree << endl;
+        cout << (max_degree == 100 ? " High degree!" :
+            (max_degree >= 90 ? " Good!" :
+                (max_degree >= 50 ? " Passed." : "Failed."))) << endl;
+    }
+    else {
+        cout << " Course not found." << endl;
+    }
+}
+
+void search_student(student students[], int count, string input) {
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == input || students[i].name == input) {
+            cout << " Name: " << students[i].name << endl;
+            cout << " Id: " << students[i].id << endl;
+            cout << " Level: " << students[i].level << endl;
+            cout << " Groub: " << students[i].group << endl;
+            cout << " Gpa: " << students[i].gpa << endl;
+            return;
+        }
+    }
+    cout << " Student not found. " << endl;
+}
+
+void search_course(course courses[], int count, string input) {
+    for (int i = 0; i < count; i++) {
+        if (courses[i].co_code == input || courses[i].co_name == input) {
+            cout << " Course Name: " << courses[i].co_name << endl;
+            cout << " Course Code: " << courses[i].co_code << endl;
+            cout << " Credit Hours: " << courses[i].credit_hours << endl;
+            return;
+        }
+    }
+    cout << " Course not found. " << endl;
+}
+int main() {
+    int ch;
+    int choice;
+
+    while (true) {
+        main_menu();
+        cin >> choice;
+
+        switch (choice) {
+        case 1: {
+            int y;
+            cout << " Enter number of students to add: ";
+            cin >> y;
+            add_std(y);
+            break;
+        }
+        case 2: {
+            char c;
+            do {
+                string data_input;
+                cout << " Enter student name or ID to update: ";
+                cin >> data_input;
+                updat_std(data_input);
+                cout << " Do you want to update another student? (y/n): ";
+                cin >> c;
+            } while (c == 'y' || c == 'Y');
+            break;
+        }
+        case 3: {
+            string dele_id;
+            cout << " Enter student ID to delete: ";
+            cin >> dele_id;
+            delete_student(dele_id);
+            break;
+        }
+        case 4:
+            add_course(courses);
+            break;
+
+        case 5:
+            update_course(courses);
+            break;
+
+        case 6:
+            delete_course(courses);
+            break;
+
+        case 7: {
+            string input_st_id, input_cou_code;
+            float degree;
+
+            cout << " Enter student ID: ";
+            cin >> input_st_id;
+            cout << " Enter course code: ";
+            cin >> input_cou_code;
+            cout << " Enter course degree: ";
+            cin >> degree;
+
+            assign_course_to_student(input_st_id, input_cou_code, degree);
+            break;
+        }
+
+        case 8:
+            display_all_students(students, count_std);
+            break;
+
+        case 9:
+            display_high_degree_in_course(students, count_std);
+            break;
+
+        case 10: {
+            int level;
+            cout << " Enter the level of the student you want to search: ";
+            cin >> level;
+            displayStudentsByLevel(students, level, count_std);
+            break;
+        }
+
+        case 11: {
+            string search_input;
+            cout << " Enter student name or ID: ";
+            cin >> search_input;
+            search_student(students, count_std, search_input);
+            break;
+        }
+
+        case 12: {
+            string input;
+            cout << " Enter course name or code: ";
+            cin >> input;
+            search_course(courses, count_course, input);
+            break;
+        }
+
+        case 13:
+            cout << " Exiting program..." << endl;
+            return 0;
+        default:
+            cout << " Invalid choice Please try again." << endl;
+        }
+    }
+}
